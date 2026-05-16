@@ -35,7 +35,6 @@ class CaptionedImageBlock(StructBlock):
 
     @cached_property
     def preview_image(self):
-        # Cache the image object for previews to avoid repeated queries
         return get_image_model().objects.last()
 
     def get_preview_value(self):
@@ -126,6 +125,23 @@ class BlockQuote(StructBlock):
         description = "A quote with an optional attribution"
 
 
+class StatisticBlock(StructBlock):
+    """
+    Custom `StructBlock` для вывода красивой статистики (Большое число + Описание)
+    """
+    number = CharBlock(required=True, max_length=20, label="Число или показатель (например: 1M+, 99%)")
+    text = CharBlock(required=True, max_length=255, label="Описание / Подпись")
+
+    class Meta:
+        icon = "decimal"
+        template = "blocks/statistic_block.html"
+        preview_value = {
+            "number": "1M+",
+            "text": "Content entries successfully scaled"
+        }
+        description = "Блок статистики с большим числом и текстовой подписью"
+
+
 # StreamBlocks
 class BaseStreamBlock(StreamBlock):
     """
@@ -158,3 +174,4 @@ class BaseStreamBlock(StreamBlock):
         preview_value="https://www.youtube.com/watch?v=mwrGSfiB1Mg",
         description="An embedded video or other media",
     )
+    statistic_block = StatisticBlock()
